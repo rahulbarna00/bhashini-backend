@@ -612,7 +612,20 @@ async def chattext(request : Request):
     except Exception as e:
         print(str(e))
         return JSONResponse(content={"messsage":"Failure ho gaya", "success":False}, status_code=500)
-    
+
+@app.post('/translatingshitfoserver')
+async def transerver(text: str=Form(...), lang:str=Form(...)):
+    try:
+        print(text,lang)
+        translate_response = await translation("English",lang,text)
+        translate_text = translate_response["translated_content"]
+        print(translate_text)
+        return JSONResponse(content={"messsage":translate_text, "success":True}, status_code=200)
+    except Exception as e:
+        print(str(e))
+        return JSONResponse(content={"messsage":"Failure ho gaya", "success":False}, status_code=500)
+
+
 @app.post('/translatingshit')
 async def trans(text: str=Form(...), lang:str=Form(...)):
     try:
