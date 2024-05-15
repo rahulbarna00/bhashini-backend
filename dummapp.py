@@ -639,10 +639,7 @@ async def trans(text: str=Form(...), lang:str=Form(...)):
         return JSONResponse(content={"messsage":"Failure ho gaya", "success":False}, status_code=500)
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8443, ssl_keyfile="key.pem", ssl_certfile="cert.pem")    
+    uvicorn.run(app, host="0.0.0.0", port=443, ssl_keyfile="key.pem", ssl_certfile="cert.pem")    
     
     
-    
-    
-    
-    
+
