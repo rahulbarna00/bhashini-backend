@@ -3,9 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <title>Welcome</title>
+    <style>
+        .container{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: radial-gradient(489.37% 592.44% at 85.58% 1.45%, #12354F 0%, #2979B5 100%);
+            gap: 40px;
+        }
+        .icon{
+            height: 120px;
+            width: 120px;
+        }
+        p{
+            text-align: center;
+        }
+        .verified{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        .congo{
+            font-family: 'Inter';
+            color: white;
+            font-weight: bolder;
+            font-size: 36px;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        .message_text{
+            font-family: 'Inter';
+            color: #99BDD7;
+            font-size: 24px;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
 </head>
 <body>
-    <h1>Thank you for confirming your email, You can now proceed with your sign up process</h1>
-</body>
+    <div class="container">
+        <div class="verified">
+            <img src="../assets/done_icon.png" alt="Done" class="icon">
+            <p class="congo">Congratulations!!</p>
+        </div>
+        <div class="message">
+            <p class="message_text">Head back to app and<br>complete the registration</p>
+        </div>
+    </div>
 </html>
