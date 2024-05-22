@@ -28,11 +28,21 @@ async def add_into_users(id, username, email, isverified):
     return response
 """
 
+async def get_user_data(user_id):
+    try:
+        data = supabase.table("users").select("username", "email", "language","contact","city").eq("user_id",user_id).execute()
+        print("data from get_user_data", data.data)
+        return data.data
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return ({"response":"Unableto fetch the user detail"})
+
+
 async def get_data(operation, Name, Brand, user_id):
     try:
         data = None
         if(operation == "all"):
-            data = supabase.table("inventory").select("product_name", "brand", "quantity", "price", "threshold").eq("user_id",user_id).order("quantity").execute()
+            data = supabase.table("inventory").select("product_name", "brand", "quantity", "price", "threshold", "category", "netweight").eq("user_id",user_id).order("quantity").execute()
             return data.data
         elif(operation == "decrement"):
             data = supabase.table("inventory").select("threshold","quantity").eq("product_name", Name).eq("brand", Brand).execute()
@@ -41,32 +51,44 @@ async def get_data(operation, Name, Brand, user_id):
             data = supabase.table("users").select("language").eq("user_id", user_id).execute()
             print("data from get_data", data)
             return data.data
+        elif(operation == "lowstock"):
+            data = supabase.table("inventory").select("product_name", "brand", "quantity", "threshold").eq("user_id",user_id).execute()
+            return data.data
     except Exception as e:
         print(f"Error: {str(e)}")
         return ({"response":"Unable to read the data from supabase"})
     
 async def add_to_supabase(json):
     try:
-        supabase.table("inventory").insert(json).execute()
-        return ({"response":"success"})
+        data = supabase.table("inventory").insert(json).execute()
+        if(data.data):
+            return ({"success":True, "resp_message":"success"})
+        else:
+            return ({"success":False, "resp_message":"Item Unavailable"})
     except Exception as e:
         print(f"Error: {str(e)}")
-        return ({"response":"Unable to add in supabase"})
+        return ({"resp_message":"Unable to add please try again","success":False})
     
 async def increment_to_supabase(json):
     try:
+        print(json)
         Name = json["Name"]
         Brand = json["Brand"]
         Quantity = json["Margin"]
         user_id = json["userId"]
         present_quantity= supabase.table("inventory").select("*").eq("product_name",Name).eq("brand",Brand).eq("user_id",user_id).execute()
-        present_quantity = int(present_quantity.data[0]["quantity"])
-        quantity = present_quantity+Quantity
-        supabase.table("inventory").update({"quantity": quantity}).eq("product_name", Name).eq("brand", Brand).eq("user_id",user_id).execute()
-        return ({"response":"success"})
+        print(present_quantity)
+        if(present_quantity.data):
+            present_quantity = int(present_quantity.data[0]["quantity"])
+            quantity = present_quantity+Quantity
+            print(quantity)
+            supabase.table("inventory").update({"quantity": quantity}).eq("product_name", Name).eq("brand", Brand).eq("user_id",user_id).execute()
+            return ({"resp_message":"success","success":True})
+        else:
+            return({"success":False,"resp_message": "Item unavailable"})
     except Exception as e:
         print(f"Error: {str(e)}")
-        return ({"response":"Unable to increment in supabase"})
+        return ({"resp_message":"Unable to increment please try again","success":False})
     
 async def decrement_to_supabase(json):
     try:
@@ -81,21 +103,24 @@ async def decrement_to_supabase(json):
             print("Current quantity from database:", present_quantity)
         quantity = present_quantity-Quantity
         supabase.table("inventory").update({"quantity": quantity}).eq("product_name", Name).eq("brand", Brand).eq("user_id",user_id).execute()
-        return ({"response":"success","Name":Name, "Brand":Brand})
+        return ({"success":True,"resp_message":"success","Name":Name, "Brand":Brand})
     except Exception as e:
         print(f"Error: {str(e)}")
-        return ({"response":"Unable to decrement from supabase"})
+        return ({"resp_message":"Unable to decrement please try again","success":False})
 
 async def delete_supabase(json):
     try:     
         Brand = json["Brand"]
         Name = json["Name"]
         user_id = json["userId"]
-        supabase.table("inventory").delete().eq("product_name",Name).eq("brand",Brand).eq("user_id",user_id).execute()
-        return ({"response":"success"})
+        dat = supabase.table("inventory").delete().eq("product_name",Name).eq("brand",Brand).eq("user_id",user_id).execute()
+        if dat.data:
+            return ({"success":True,"resp_message":"success"})
+        else:
+            return ({"success":False,"resp_message":"Item Unavailable"})
     except Exception as e:
         print(f"Error: {str(e)}")
-        return ({"response":"Unable to delete from supabase"})
+        return ({"resp_message":"Unable to delete, please try again","success":False})
 #json = {"Name":"Butter", "Brand":"Amul", "Category": "Bakery", "Net Weight": "250 grams", "Quantity": 45, "Price":150, "Threshold": 22}
 #data = add_to_supabase(json)
 #print(data)

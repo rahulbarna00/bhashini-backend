@@ -18,16 +18,24 @@ async def twilio_message(reply):
 
 async def alert_message(operation,Name, Brand, language):
     try: 
-        if operation=="decrement":
-            message = f"Your stock for {Name} of {Brand} has decreased the threshold value."
-            trans_message = await translation("English", language, message)
-            print(trans_message['translated_content'])
-        elif operation == "delete":
-            message = f"Your product {Name} of {Brand} has been successfully deleted"
-            trans_message = await translation("English", language, message)
-            print(trans_message['translated_content'])
-        messi = await twilio_message(trans_message['translated_content'])
-        return {"text":"Success", "alert_message":trans_message['translated_content']}
+        if language == "English":
+            if operation=="decrement":
+                message = f"Your stock for {Name} of {Brand} has decreased the threshold value."
+            elif operation == "delete":
+                message = f"Your product {Name} of {Brand} has been successfully deleted"
+            messi = await twilio_message(message)
+            return {"success":True, "alert_message":message}
+        else:
+            if operation=="decrement":
+                message = f"Your stock for {Name} of {Brand} has decreased the threshold value."
+                trans_message = await translation("English", language, message)
+                print(trans_message['translated_content'])
+            elif operation == "delete":
+                message = f"Your product {Name} of {Brand} has been successfully deleted"
+                trans_message = await translation("English", language, message)
+                print(trans_message['translated_content'])
+            messi = await twilio_message(trans_message['translated_content'])
+            return {"success":True, "alert_message":trans_message['translated_content']}
     except Exception as e:
         print(f"Error: {str(e)}")
-        return { "text": "Error processing alert message text", "success": False}
+        return { "message": "Error processing alert message text", "success": False}
