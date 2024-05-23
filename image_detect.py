@@ -10,7 +10,7 @@ load_dotenv()
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 genai.configure(api_key=GEMINI_API_KEY)
 
-
+"""
 async def capture_count(image_file):
     file_bytes = await image_file.read()
     with BytesIO(file_bytes) as img_data:
@@ -27,12 +27,12 @@ async def capture_count(image_file):
                 img.save(buffer, format=img_format)
                 image_bytes = buffer.getvalue()
                 model = genai.GenerativeModel("gemini-pro-vision")
-                response = model.generate_content(glm.Content(parts=[glm.Part(text='Focus only on the product in the image and return only the count of products(quantity). Note that the answer should only be a number'),
+                response = model.generate_content(glm.Content(parts=[glm.Part(text='You have to work like a Object and Object’s count  Detection assistant. You will be provided with an Image clicked from Mobile phone, Detect the main Object in the photo ignoring the environment. Gather as much as details about that object as you can. You have to give the output in a form of JSON with keys named as Name, Brand, Quantity. You have to strictly follow the given name convention. Try to detect the Name and Brand written on the object (Brand is usually a named entity and Product Name is a name given to an object), for Quantity detect how many Objects are present In the given image, you can’t detect Threshold from image so written its value as 0, Based on the Name and Brand of the Object derive it’s Category, for Price try to search Number present with some currency value if not then consider the number you detected by scanning the image(Also you can try to get the Price according to Indian market based on Name and Brand), and for consider values which might describe the weight of the object (NOTE: sometimes the product is a bundle containing the same product of multiple quantities so don’t get confused there). Example (Name: “Mac Book Pro”, Brand: “Apple”, Quantity: 2). NOTE: Quantity should be numbers,  should have some unit associated with it like kg, gram, Oz, Litre, etc., Name and Brand should not be the same and Category should be sensible. After generating the JSON verify it whether the Quantity is not contradicting each other, Brand and Name are not conflicting with each other.'),
                                                             glm.Part(inline_data=glm.Blob(mime_type='image/jpeg',
                                                                                         data=image_bytes))]))
                 result = int(response.text)
     return result
-
+"""
 
 async def capture_add(image_file):
     file_bytes = await image_file.read()
@@ -50,7 +50,7 @@ async def capture_add(image_file):
                 img.save(buffer, format=img_format)
                 image_bytes = buffer.getvalue()
                 model = genai.GenerativeModel("gemini-pro-vision")
-                response = model.generate_content(glm.Content(parts=[glm.Part(text='Focus only on the product in the image and generate a json file with Name of product, Brand of product, Category of product, Price of product, Netweight of the product, Quantity of product and Threshold of product. Here is an example of the format:\nExample: (Name: Wheat Flour, Brand: Aashirvad, Category: Baking, Netweight: 10KG, Quantity: 25, Price: 70, Threshold: 5).\nMake sure that Price, Quanitity and Threshold are written in number format. If any of the 7 entered parameters are not present in the image or you are not sure about the value of that parameter then keep the json value of that parameter as blank.'),
+                response = model.generate_content(glm.Content(parts=[glm.Part(text='You have to work like a Object and Object’s count  Detection assistant. You will be provided with an Image clicked from Mobile phone, Detect the main Object in the photo ignoring the environment. Gather as much as details about that object as you can. You have to give the output in a form of JSON with keys named as Name, Brand, Category, Netweight, Quantity, Price, Threshold. You have to strictly follow the given name convention. Try to detect the Name and Brand written on the object (Brand is usually a named entity and Product Name is a name given to an object), for Quantity detect how many Objects are present In the given image, you can’t detect Threshold from image so written its value as 1, Based on the Name and Brand of the Object derive it’s Category, for Price try to search Number present with some currency value if not then consider the number you detected by scanning the image(Also you can try to get the Price according to Indian market based on Name and Brand), and for Netweight consider values which might describe the weight of the object (NOTE: sometimes the product is a bundle containing the same product of multiple quantities so don’t get confused there). Example (Name: “Mac Book Pro”, Brand: “Apple”, Category:”Electronic”, Quantity: 4, Threshold: 0, Price: 200000, Netweight: “1.5 kgs”). NOTE: Threshold, Price and Quantity should be numbers, Netweight should have some unit associated with it like kg, gram, Oz, Litre, etc., Name and Brand should not be the same and Category should be sensible. After generating the JSON verify it whether the Quantity and Netweight are not contradicting each other, Brand and Name are not conflicting with each other, Price is not confused with Quantity or Netweight.'),
                                                             glm.Part(inline_data=glm.Blob(mime_type='image/jpeg',
                                                                                         data=image_bytes))]))
                 result = response.text
@@ -79,7 +79,7 @@ async def capture_delete(image_file):
                 img.save(buffer, format=img_format)
                 image_bytes = buffer.getvalue()
                 model = genai.GenerativeModel("gemini-pro-vision")
-                response = model.generate_content(glm.Content(parts=[glm.Part(text='Focus only on the product in the image and generate a json file with Name of product, Brand of product. Here is an example of the format:\nExample: (Name: Wheat Flour, Brand: Aashirvad).\nIf any of the 2 entered parameters are not present then keep the json value of the parameter blank.'),
+                response = model.generate_content(glm.Content(parts=[glm.Part(text='You have to work like a Object and Object’s count  Detection assistant. You will be provided with an Image clicked from Mobile phone, Detect the main Object in the photo ignoring the environment. Gather as much as details about that object as you can. You have to give the output in a form of JSON with keys named as Name and Brand. You have to strictly follow the given name convention. Try to detect the Name and Brand written on the object (Brand is usually a named entity and Product Name is a name given to an object).Example (Name: “Mac Book Pro”, Brand: “Apple”). Name and Brand should not be the in relation with each other. After generating the JSON verify it whether the Brand and Name are not conflicting with each other.'),
                                                             glm.Part(inline_data=glm.Blob(mime_type='image/jpeg',
                                                                                         data=image_bytes))]))
                 result = response.text
@@ -108,7 +108,7 @@ async def capture_inc(image_file):
                 img.save(buffer, format=img_format)
                 image_bytes = buffer.getvalue()
                 model = genai.GenerativeModel("gemini-pro-vision")
-                response = model.generate_content(glm.Content(parts=[glm.Part(text='Focus only on the product in the image and generate a json file with Name of product, Brand of product, Quantity of Product. Here is an example of the format:\nExample: (Name: Wheat Flour, Brand: Aashirvad, Quantity: 25).\nMake sure that Quanitity is written in number format. If any of the 3 entered parameters are not present then keep the json value of the parameter blank.'),
+                response = model.generate_content(glm.Content(parts=[glm.Part(text='You have to work like a Object and Object’s count  Detection assistant. You will be provided with an Image clicked from Mobile phone, Detect the main Object in the photo ignoring the environment. Gather as much as details about that object as you can. You have to give the output in a form of JSON with keys named as Name, Brand, Quantity. You have to strictly follow the given name convention. Try to detect the Name and Brand written on the object (Brand is usually a named entity and Product Name is a name given to an object), for Quantity detect how many Objects are present In the given image, you can’t detect Threshold from image so written its value as 0, Based on the Name and Brand of the Object derive it’s Category, for Price try to search Number present with some currency value if not then consider the number you detected by scanning the image(Also you can try to get the Price according to Indian market based on Name and Brand), and for consider values which might describe the weight of the object (NOTE: sometimes the product is a bundle containing the same product of multiple quantities so don’t get confused there). Example (Name: “Mac Book Pro”, Brand: “Apple”, Quantity: 2). NOTE: Quantity should be numbers,  should have some unit associated with it like kg, gram, Oz, Litre, etc., Name and Brand should not be the same and Category should be sensible. After generating the JSON verify it whether the Quantity is not contradicting each other, Brand and Name are not conflicting with each other.'),
                                                             glm.Part(inline_data=glm.Blob(mime_type='image/jpeg',
                                                                                         data=image_bytes))]))
                 result = response.text
